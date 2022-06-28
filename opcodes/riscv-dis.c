@@ -187,6 +187,29 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset,
     pd->print_addr = (bfd_vma)(int32_t) pd->print_addr;
 }
 
+#define RVP_MAX_KEYWORD_LEN 32
+
+static bool
+parse_rvp_field (const char **str, char name[RVP_MAX_KEYWORD_LEN])
+{
+  char *p = name;
+  const char *str_t;
+
+  str_t = *str;
+  str_t--;
+  while (isalnum (*str_t) || *str_t == '.' || *str_t == '_')
+    *p++ = *str_t++;
+  *p = '\0';
+
+  if (strncmp (name, "nds_", 4) == 0)
+    {
+      *str = str_t;
+      return true;
+    }
+  else
+    return false;
+}
+
 /* Print insn arguments for 32/64-bit code.  */
 
 static void
@@ -394,6 +417,7 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	    print (info->stream, dis_style_immediate, "0");
 	  break;
 
+	case 'g':
 	case 'b':
 	case 's':
 	  if ((l & MASK_JALR) == MATCH_JALR)
@@ -406,6 +430,11 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		 riscv_gpr_names[EXTRACT_OPERAND (RS2, l)]);
 	  break;
 
+	case 'r':
+	  print (info->stream, dis_style_register, "%s",
+		 riscv_gpr_names[EXTRACT_OPERAND (RS3, l)]);
+	  break;
+
 	case 'u':
 	  print (info->stream, dis_style_immediate, "0x%x",
 		 (unsigned)EXTRACT_UTYPE_IMM (l) >> RISCV_IMM_BITS);
@@ -416,6 +445,11 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		     riscv_rm, ARRAY_SIZE (riscv_rm));
 	  break;
 
+	case 'l':
+	  print (info->stream, dis_style_immediate, "%d",
+	  	 (int)EXTRACT_ITYPE_IMM6L (l));
+	  break;
+
 	case 'P':
 	  arg_print (info, EXTRACT_OPERAND (PRED, l),
 		     riscv_pred_succ, ARRAY_SIZE (riscv_pred_succ));
@@ -424,6 +458,35 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	case 'Q':
 	  arg_print (info, EXTRACT_OPERAND (SUCC, l),
 		     riscv_pred_succ, ARRAY_SIZE (riscv_pred_succ));
+	  break;
+
+	case 'n':
+	  {
+	    switch (*++oparg)
+	    {
+		case 'd':
+		  print (info->stream, dis_style_register, "%s", riscv_gpr_names[rd]);
+		  break;
+		case 's':
+		  print (info->stream, dis_style_register, "%s", riscv_gpr_names[rs1]);
+		  break;
+		case 't':
+		  print (info->stream, dis_style_register, "%s", riscv_gpr_names[EXTRACT_OPERAND (RS2, l)]);
+		  break;
+		case '3':
+		  print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM3U (l));
+		  break;
+		case '4':
+		  print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM4U (l));
+		  break;
+		case '5':
+		  print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM5U (l));
+		  break;
+		case '6':
+		  print (info->stream, dis_style_immediate, "%d", (int)EXTRACT_PTYPE_IMM6U (l));
+		  break;
+	      }
+	  }
 	  break;
 
 	case 'o':
