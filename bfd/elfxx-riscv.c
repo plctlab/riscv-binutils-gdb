@@ -2405,6 +2405,9 @@ riscv_multi_subset_supports (riscv_parse_subset_t *rps,
     case INSN_CLASS_ZBB_OR_ZBPBO:
       return (riscv_subset_supports (rps, "zbb")
 	      || riscv_subset_supports (rps, "zbpbo"));
+    case INSN_CLASS_ZBKB_OR_ZBPBO:
+      return (riscv_subset_supports (rps, "zbkb")
+	      || riscv_subset_supports (rps, "zbpbo"));
     default:
       rps->error_handler
         (_("internal: unreachable INSN_CLASS_*"));
@@ -2518,6 +2521,8 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return _("zbpbo");
     case INSN_CLASS_ZBB_OR_ZBPBO:
       return _("zbpbo' or `zbb");
+    case INSN_CLASS_ZBKB_OR_ZBPBO:
+      return _("zbpbo' or `zbkb");
     default:
       rps->error_handler
         (_("internal: unreachable INSN_CLASS_*"));

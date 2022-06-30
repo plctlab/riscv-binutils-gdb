@@ -950,7 +950,7 @@ const struct riscv_opcode riscv_opcodes[] =
 {"brev8",     64, INSN_CLASS_ZBKB,  "d,s",      MATCH_GREVI | MATCH_SHAMT_BREV8, MASK_GREVI | MASK_SHAMT, match_opcode, 0 },
 {"zip",       32, INSN_CLASS_ZBKB,  "d,s",      MATCH_SHFLI|MATCH_SHAMT_ZIP_32, MASK_SHFLI|MASK_SHAMT, match_opcode, INSN_ALIAS },
 {"unzip",     32, INSN_CLASS_ZBKB,  "d,s",      MATCH_UNSHFLI|MATCH_SHAMT_ZIP_32, MASK_UNSHFLI|MASK_SHAMT, match_opcode, INSN_ALIAS },
-{"pack",       0, INSN_CLASS_ZBB_OR_ZBPBO,  "d,s,t",    MATCH_PACK, MASK_PACK, match_opcode, 0 },
+{"pack",       0, INSN_CLASS_ZBKB_OR_ZBPBO,  "d,s,t",    MATCH_PACK, MASK_PACK, match_opcode, 0 },
 {"packh",      0, INSN_CLASS_ZBKB,  "d,s,t",    MATCH_PACKH, MASK_PACKH, match_opcode, 0 },
 {"packw",     64, INSN_CLASS_ZBKB,  "d,s,t",    MATCH_PACKW, MASK_PACKW, match_opcode, 0 },
 {"andn",       0, INSN_CLASS_ZBB_OR_ZBKB,  "d,s,t", MATCH_ANDN, MASK_ANDN, match_opcode, 0 },

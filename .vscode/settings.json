@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*.def": "plaintext",
-        "*.em": "empy.c",
-        "stdint.h": "c"
-    }
-}

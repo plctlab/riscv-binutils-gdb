@@ -187,29 +187,6 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset,
     pd->print_addr = (bfd_vma)(int32_t) pd->print_addr;
 }
 
-#define RVP_MAX_KEYWORD_LEN 32
-
-static bool
-parse_rvp_field (const char **str, char name[RVP_MAX_KEYWORD_LEN])
-{
-  char *p = name;
-  const char *str_t;
-
-  str_t = *str;
-  str_t--;
-  while (isalnum (*str_t) || *str_t == '.' || *str_t == '_')
-    *p++ = *str_t++;
-  *p = '\0';
-
-  if (strncmp (name, "nds_", 4) == 0)
-    {
-      *str = str_t;
-      return true;
-    }
-  else
-    return false;
-}
-
 /* Print insn arguments for 32/64-bit code.  */
 
 static void

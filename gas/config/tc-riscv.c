@@ -1058,32 +1058,6 @@ arg_lookup (char **s, const char *const *array, size_t size, unsigned *regnop)
 
 #define USE_BITS(mask,shift) (used_bits |= ((insn_t)(mask) << (shift)))
 
-#define RVP_MAX_KEYWORD_LEN 32
-
-static bool
-parse_rvp_field (const char **str, char name[RVP_MAX_KEYWORD_LEN])
-{
-  char *p = name;
-  const char *str_t;
-
-  str_t = *str;
-  str_t--;
-  while (ISALNUM (*str_t) || *str_t == '.' || *str_t == '_')
-    *p++ = *str_t++;
-  *p = '\0';
-
-  as_bad (_("name is "
-            " `%s',str_t is `%s'"),
-          name,str_t);
-  if (strncmp (name, "nds_", 4) == 0)
-    {
-      *str = str_t;
-      return true;
-    }
-  else
-    return false;
-}
-
 /* For consistency checking, verify that all bits are specified either
    by the match/mask part of the instruction definition, or by the
    operand list. The `length` could be 0, 4 or 8, 0 for auto detection.  */
@@ -2994,51 +2968,77 @@ case 'n':
             }
             continue;
 
-          my_getExpression (imm_expr, asarg);
-          if (imm_expr->X_op != O_constant
-          || imm_expr->X_add_number >= xlen
-          || imm_expr->X_add_number < 0)
-          break;
-
 
           case '3':
+          {
+            my_getExpression (imm_expr, asarg);
+            if (imm_expr->X_op != O_constant
+            || imm_expr->X_add_number >= xlen
+	          || imm_expr->X_add_number < 0)
+            break;
+            
             if(VALID_PTYPE_IMM3U (imm_expr->X_add_number))
             {
               ip->insn_opcode |= ENCODE_PTYPE_IMM3U (imm_expr->X_add_number);
               asarg = expr_end;
               imm_expr->X_op = O_absent;
             }
+          }
             continue;
 		      
           case '4':
+          {
+            my_getExpression (imm_expr, asarg);
+            if (imm_expr->X_op != O_constant
+            || imm_expr->X_add_number >= xlen
+	          || imm_expr->X_add_number < 0)
+            break;
+
             if(VALID_PTYPE_IMM4U (imm_expr->X_add_number))
             {
               ip->insn_opcode |= ENCODE_PTYPE_IMM4U (imm_expr->X_add_number);
               asarg = expr_end;
               imm_expr->X_op = O_absent;
             }
+          }
             continue;
           
           case '5':
+          { 
+            my_getExpression (imm_expr, asarg);
+            if (imm_expr->X_op != O_constant
+            || imm_expr->X_add_number >= xlen
+	          || imm_expr->X_add_number < 0)
+            break;
+
             if(VALID_PTYPE_IMM3U (imm_expr->X_add_number))
             {
               ip->insn_opcode |= ENCODE_PTYPE_IMM3U (imm_expr->X_add_number);
               asarg = expr_end;
               imm_expr->X_op = O_absent;
             }
+          }
             continue;
 
           case '6':
+          {
+            my_getExpression (imm_expr, asarg);
+            if (imm_expr->X_op != O_constant
+            || imm_expr->X_add_number >= xlen
+	          || imm_expr->X_add_number < 0)
+            break;
+
             if(VALID_PTYPE_IMM3U (imm_expr->X_add_number))
             {
               ip->insn_opcode |= ENCODE_PTYPE_IMM3U (imm_expr->X_add_number);
               asarg = expr_end;
               imm_expr->X_op = O_absent;
             }
+          }
             continue;
           
           default:
-            break;
+            goto unknown_riscv_ip_operand;
           
           }
           break;
